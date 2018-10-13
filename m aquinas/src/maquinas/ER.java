@@ -114,6 +114,14 @@ public class ER {
     public void setErCadena(String[] erCadena) {
         this.erCadena = erCadena;
     }
+
+    public ArrayList<String> getRpn() {
+        return rpn;
+    }
+
+    public void setRpn(ArrayList<String> rpn) {
+        this.rpn = rpn;
+    }
     
     
     

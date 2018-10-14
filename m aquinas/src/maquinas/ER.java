@@ -52,8 +52,16 @@ public class ER {
             if (a >= 65 && a<= 90 || a >= 97 && a<= 122 ) {
                 this.rpn.add(erCadena[i]);
             }
+            /*if(erCadena[i].equals("("))
+            {
+                pila.push(erCadena[i]);
+            }*/
             else {
-                if (pila.size() == 0) {
+                /*if (pila.size() == 0) {
+                    pila.push(erCadena[i]);
+                }*/
+                if(erCadena[i].equals("(") || pila.size() ==0)
+                {
                     pila.push(erCadena[i]);
                 }
                
@@ -70,11 +78,11 @@ public class ER {
                         //System.out.println(this.precedencias.get(erCadena[i]));
                     }
                     else{
-                        if (this.precedencias.get(pila.peek()) < this.precedencias.get(erCadena[i]) || this.precedencias.get(pila.peek()) > this.precedencias.get(erCadena[i])) {
+                        if (this.precedencias.get(pila.peek()) < this.precedencias.get(erCadena[i]) /*|| this.precedencias.get(pila.peek()) > this.precedencias.get(erCadena[i])*/) {
                             pila.push(erCadena[i]);
                         }
                         else {
-                            if (this.precedencias.get(pila.peek()) == this.precedencias.get(erCadena[i])) {
+                            if (this.precedencias.get(pila.peek()) >= this.precedencias.get(erCadena[i])) {
                                 this.rpn.add(pila.pop());
                                 pila.push(erCadena[i]);
                             }

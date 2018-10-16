@@ -38,7 +38,8 @@ public class AFND {
             }
             else if(rpn.get(i).equals("."))
             {   
-                int contadorEstadosLetra = 0;
+                //buscar al primer sin entrada, buscar al primer sin salida,excepcion en clausura de kleene
+                /*int contadorEstadosLetra = 0;
                 Transicion q0 = new Transicion(null,null,null);
                 Transicion q1 = new Transicion(null,null,null);
                 int j = this.delta.size()-1;
@@ -69,10 +70,47 @@ public class AFND {
                     
                 }
                 Transicion ep = new Transicion(q1.getSegunda(),"_",q0.getPrimera());
-                this.delta.add(ep);
+                this.delta.add(ep);¨*/
+                //Bsucamos al primer sin salida
+                boolean flag1=false;
+                String primerSinEntrada = "";
+                for(int j =this.delta.size()-1 ;j>=0 && !flag1;j--)
+                {
+                    Transicion objetivo = this.delta.get(j);
+                    if(this.comprobarSinEntrada(objetivo.getPrimera()))
+                    {
+                       primerSinEntrada = objetivo.getPrimera();
+                        System.out.println("sin Entrada:" + primerSinEntrada);
+                       flag1=true;
+                    }
+                }
+                boolean flag2 =false;
+                String segundoSinSalida = "";
+                int contador=0;
+                for(int j =this.delta.size()-1;j>=0 && !flag2;j--)
+                {
+                    Transicion objetivo = this.delta.get(j);
+                    if(this.comprobarSinSalida(objetivo.getSegunda()))
+                    {
+                        if(contador==0)
+                        {
+                            contador++;
+                        }
+                        else
+                        {
+                            segundoSinSalida= objetivo.getSegunda();
+                            flag2=true;
+                        }
+                    }
+                }
+                Transicion concatenacion = new Transicion(segundoSinSalida,"_",primerSinEntrada);
+                this.delta.add(concatenacion);
+                //
             }
             if(rpn.get(i).equals("|"))
             {
+                //buscar a los dos primeros sin salida y sin entrada
+                /*
                 System.out.println("entre a la union");
                ArrayList<String> inicios = this.estadosSinEntrada();
                for (int j = 0; j < inicios.size(); j++)
@@ -93,14 +131,105 @@ public class AFND {
                   
                }
                this.estados.add("q"+this.contador);
+               this.contador++;*/
+               String primerSinEntrada = "";
+               String segundoSinEntrada = "";
+               boolean flag1=false;
+               int contador=0;
+               for(int j =this.delta.size()-1;j>=0 && !flag1;j--)
+               {
+                   Transicion objetivo = this.delta.get(j);
+                   if(this.comprobarSinEntrada(objetivo.getPrimera()))
+                   {
+                       if(contador==0)
+                       {
+                          primerSinEntrada = objetivo.getPrimera();
+                          contador++;
+                       }
+                       else
+                       {
+                           segundoSinEntrada = objetivo.getPrimera();
+                           flag1=true;
+                       }
+                   }
+               }
+               //
+                String primerSinSalida = "";
+               String segundoSinSalida = "";
+               boolean flag2=false;
+               contador=0;
+               for(int j =this.delta.size()-1;j>=0 && !flag2;j--)
+               {
+                   Transicion objetivo = this.delta.get(j);
+                   if(this.comprobarSinSalida(objetivo.getSegunda()))
+                   {
+                       if(contador==0)
+                       {
+                          primerSinSalida = objetivo.getSegunda();
+                          contador++;
+                       }
+                       else
+                       {
+                           segundoSinSalida = objetivo.getSegunda();
+                           flag2=true;
+                       }
+                   }
+               }
                this.contador++;
+               this.delta.add(new Transicion("q"+this.contador,"_",primerSinEntrada));
+               this.delta.add(new Transicion("q"+this.contador,"_",segundoSinEntrada));
+               this.contador++;
+               this.delta.add(new Transicion(primerSinSalida,"_","q"+this.contador));
+               this.delta.add(new Transicion(segundoSinSalida,"_","q"+this.contador));
+               this.contador++;
+               //
             }
+            //Clausura de Kleen
             if(rpn.get(i).equals("*"))
             {
+                //Codigo para la union
                 if(rpn.get(i-1).equals("."))
                 {
+                    boolean flag1=false;
+                    String primerSinEntrada = "";
+                    for(int j =this.delta.size()-1 ;j>=0 && !flag1;j--)
+                    {
+                        Transicion objetivo = this.delta.get(j);
+                        if(this.comprobarSinEntrada(objetivo.getPrimera()))
+                        {
+                           primerSinEntrada = objetivo.getPrimera();
+                            System.out.println("sin Entrada:" + primerSinEntrada);
+                           flag1=true;
+                        }
+                    }
+                    boolean flag2=false;
+                    String primerSinSalida = "";
+                    for(int j =this.delta.size()-1 ;j>=0 && !flag2;j--)
+                    {
+                        Transicion objetivo = this.delta.get(j);
+                        if(this.comprobarSinSalida(objetivo.getSegunda()))
+                        {
+                           primerSinSalida = objetivo.getSegunda();
+                           System.out.println("sin Salida:" + primerSinSalida);
+                           flag2=true;
+                        }
+                    }
+                    Transicion loop = new Transicion(primerSinSalida,"_",primerSinEntrada);
+                    this.delta.add(loop);
+                    String comienzo = "q"+this.contador;
+                    this.estados.add(comienzo);
+                    this.contador++;
+                    this.delta.add(new Transicion(comienzo,"_",primerSinEntrada));
+                    this.delta.add(new Transicion(primerSinSalida,"_","q"+this.contador));
+                    this.delta.add(new Transicion(comienzo,"_","q"+this.contador));
+                    this.estados.add("q"+this.contador);
+                    this.contador++;
+                    
+                    
+                    
                     
                 }
+                //COdigo para la union
                 if(rpn.get(i-1).equals("|"))
                 {
                     String sinEntrada = this.estadosSinEntrada().get(0);
@@ -116,7 +245,8 @@ public class AFND {
                     this.estados.add("q"+this.contador);
                     this.contador++;
                 }
-                if(!rpn.get(i-1).equals(".") || !rpn.get(i-1).equals("|"))
+                int valorLetra = (int) rpn.get(i-1).charAt(0);
+                if(valorLetra >= 65 && valorLetra<= 90 || valorLetra >= 97 && valorLetra<= 122)
                 {
                     Transicion anterior = this.delta.get(delta.size()-1);
                     this.delta.add(new Transicion(anterior.getSegunda(),"_",anterior.getPrimera()));
@@ -199,6 +329,31 @@ public class AFND {
         }
         return nuevo;
     }
+    //Metodo para comprobar si el estado no tiene aristas entrantes
+    public boolean comprobarSinEntrada(String estado)
+    {
+        for(int i=0;i<this.delta.size();i++)
+        {
+            if(this.delta.get(i).getSegunda().equals(estado))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    //Metodo para comprobar si el nodo no tiene aristas salientes
+    public boolean comprobarSinSalida(String estado)
+    {
+        for(int i=0;i<this.delta.size();i++)
+        {
+            if(this.delta.get(i).getPrimera().equals(estado))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     
     public ArrayList<String> getEstados() {
         return estados;

@@ -39,38 +39,7 @@ public class AFND {
             else if(rpn.get(i).equals("."))
             {   
                 //buscar al primer sin entrada, buscar al primer sin salida,excepcion en clausura de kleene
-                /*int contadorEstadosLetra = 0;
-                Transicion q0 = new Transicion(null,null,null);
-                Transicion q1 = new Transicion(null,null,null);
-                int j = this.delta.size()-1;
-                while(j>=0) {
-                    int b = (int) this.delta.get(j).getUnion().charAt(0);
-                    if (b >= 65 && b<= 90 || b >= 97 && b<= 122 ) {
-                        if (contadorEstadosLetra == 0) {
-                            q0.setPrimera(this.delta.get(j).getPrimera());
-                            q0.setSegunda(this.delta.get(j).getSegunda());
-                            q0.setUnion(this.delta.get(j).getUnion());
-                            System.out.println("primero ");
-                            System.out.println(q0.getPrimera());
-                            contadorEstadosLetra ++;
-                        }
-                        else {
-                            if (contadorEstadosLetra == 1) {
-                                q1.setPrimera(this.delta.get(j).getPrimera());
-                                q1.setSegunda(this.delta.get(j).getSegunda());
-                                q1.setUnion(this.delta.get(j).getUnion());
-                                System.out.println("segundo ");
-                                System.out.println(q1.getSegunda());
-                                contadorEstadosLetra = -1;
-                            }
-                        }
-                        
-                    }
-                    j=j-1;
-                    
-                }
-                Transicion ep = new Transicion(q1.getSegunda(),"_",q0.getPrimera());
-                this.delta.add(ep);¨*/
+                
                 //Bsucamos al primer sin salida
                 boolean flag1=false;
                 String primerSinEntrada = "";
@@ -86,6 +55,7 @@ public class AFND {
                 }
                 boolean flag2 =false;
                 String segundoSinSalida = "";
+                String aux="";//parche para la clausura de kleen
                 int contador=0;
                 for(int j =this.delta.size()-1;j>=0 && !flag2;j--)
                 {
@@ -95,11 +65,17 @@ public class AFND {
                         if(contador==0)
                         {
                             contador++;
+                            aux=objetivo.getSegunda();
                         }
                         else
                         {
-                            segundoSinSalida= objetivo.getSegunda();
-                            flag2=true;
+                            if(!objetivo.getSegunda().equals(aux))
+                            {
+                                segundoSinSalida= objetivo.getSegunda();
+                                System.out.println("2° sin salida: " + segundoSinSalida);
+                                flag2=true;
+                            }
+                            
                         }
                     }
                 }
@@ -110,28 +86,7 @@ public class AFND {
             if(rpn.get(i).equals("|"))
             {
                 //buscar a los dos primeros sin salida y sin entrada
-                /*
-                System.out.println("entre a la union");
-               ArrayList<String> inicios = this.estadosSinEntrada();
-               for (int j = 0; j < inicios.size(); j++)
-               {
-                  Transicion nueva = new Transicion("q"+this.contador,"_",inicios.get(j));
-                  this.delta.add(nueva);
-                  
-                  
-               }
-               this.estados.add("q"+this.contador);
-               this.contador++;
-               ArrayList<String> finales = this.estadosSinSalida();
-               for (int j = 0; j < inicios.size(); j++)
-               {
-                  Transicion nueva = new Transicion(finales.get(j),"_","q"+this.contador);
-                  this.delta.add(nueva);
-                  
-                  
-               }
-               this.estados.add("q"+this.contador);
-               this.contador++;*/
+              
                String primerSinEntrada = "";
                String segundoSinEntrada = "";
                boolean flag1=false;
@@ -178,9 +133,11 @@ public class AFND {
                this.contador++;
                this.delta.add(new Transicion("q"+this.contador,"_",primerSinEntrada));
                this.delta.add(new Transicion("q"+this.contador,"_",segundoSinEntrada));
+               this.estados.add("q"+this.contador);
                this.contador++;
                this.delta.add(new Transicion(primerSinSalida,"_","q"+this.contador));
                this.delta.add(new Transicion(segundoSinSalida,"_","q"+this.contador));
+               this.estados.add("q"+this.contador);
                this.contador++;
                //
             }
@@ -369,6 +326,22 @@ public class AFND {
 
     public void setSigma(ArrayList<String> sigma) {
         this.sigma = sigma;
+    }
+
+    public ArrayList<Transicion> getDelta() {
+        return delta;
+    }
+
+    public void setDelta(ArrayList<Transicion> delta) {
+        this.delta = delta;
+    }
+
+    public int getContador() {
+        return contador;
+    }
+
+    public void setContador(int contador) {
+        this.contador = contador;
     }
     
     

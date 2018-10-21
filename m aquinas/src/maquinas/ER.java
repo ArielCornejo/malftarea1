@@ -78,13 +78,17 @@ public class ER {
                         //System.out.println(this.precedencias.get(erCadena[i]));
                     }
                     else{
-                        if (this.precedencias.get(pila.peek()) < this.precedencias.get(erCadena[i]) /*|| this.precedencias.get(pila.peek()) > this.precedencias.get(erCadena[i])*/) {
-                            pila.push(erCadena[i]);
-                        }
-                        else {
-                            if (this.precedencias.get(pila.peek()) >= this.precedencias.get(erCadena[i])) {
-                                this.rpn.add(pila.pop());
+                        boolean flag = true;
+                        while(flag ){
+                            if (this.precedencias.get(pila.peek()) < this.precedencias.get(erCadena[i]) /*|| this.precedencias.get(pila.peek()) > this.precedencias.get(erCadena[i])*/) {
                                 pila.push(erCadena[i]);
+                                flag = false;
+                            }
+                            else {
+                                if (this.precedencias.get(pila.peek()) >= this.precedencias.get(erCadena[i])) {
+                                    this.rpn.add(pila.pop());
+                                    //pila.push(erCadena[i]);
+                                }
                             }
                         }
                     }

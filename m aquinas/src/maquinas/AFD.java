@@ -26,6 +26,8 @@ public class AFD {
      private ArrayList<String> coneccionesEstado;
      private ArrayList<String> nodos;
      private ArrayList<String> AuxiliaresEstados;
+     
+     HashMap<String,ArrayList<ArrayList<String>>> tabla;//una tabla para los estados, simula ser la tabla que se utiliza para los ejercicios
 
      
      
@@ -39,13 +41,14 @@ public class AFD {
         this.nodos = new ArrayList <>();
         this.AuxiliaresEstados = new ArrayList <>();
         this.estadosAuxiliares = new ArrayList <>();
+        tabla = new HashMap<>();
         this.deltaAFD = d;
         this.sigmaAFD = s;
         this.estadosAFD = e;
         this.estadoDeInicio = this.estadoSinEntrada();
         System.out.println(estadoDeInicio);
         System.out.println("ddd");
-        this.imprimirdelta();
+        /*this.imprimirdelta();
         nodosTodos();
         crearArrayListEstados();
         this.imprimirNodos();
@@ -53,7 +56,8 @@ public class AFD {
         this.imprimirConeccionesDeCadaEstado();
         
         primeraIteracionConecciones();
-        imprimirEstados();
+        imprimirEstados();*/
+        this.afndAAfd();//metodo del ariel :3
         //ordenarEstados();
         //this.imprimirEstadosAuxiliares();
         
@@ -347,31 +351,121 @@ public class AFD {
    //Ariel
     public void afndAAfd()
     {
-        HashMap<String,ArrayList<String>> tabla;
-        tabla = new HashMap<>();
-        tabla.put("estados", new ArrayList<String>());
+        //se arma la tabla,la primera key son los estados las que sigan son las letras del alfabeto
+        tabla.put("estados", new ArrayList<ArrayList<String>>());
         for(int i =0;i<this.sigmaAFD.size();i++)
         {
-            tabla.put(this.sigmaAFD.get(i),new ArrayList<String>());
+            tabla.put(this.sigmaAFD.get(i),new ArrayList<ArrayList<String>>());
+        }
+        System.out.println("estado de inicio" + this.estadoDeInicio);
+        //rellenar estado inicial
+        tabla.get("estados").add(new ArrayList<String>());
+        tabla.get("estados").get(0).add(estadoDeInicio);
+        for (int i = 0; i < tabla.get("estados").get(0).size(); i++)
+        {
+            ArrayList<String> proximos =this.encontrarAdyacencias(tabla.get("estados").get(0).get(i), "_");
+            for (int j = 0; j < proximos.size(); j++) 
+            {
+                tabla.get("estados").get(0).add(proximos.get(j));
+            }
+            
         }
         
-        //rellenar estado inicial
-        tabla.get("estados").add(estadoDeInicio);
+        //Automatizacion
         for (int i = 0; i < tabla.get("estados").size(); i++)
         {
-            for(int j=0;j<this.deltaAFD.size();j++)
-            {
-                
+            ArrayList<String> estadoAFD = tabla.get("estados").get(i);//estado que se esta revisando
+            for (int j = 0; j < this.sigmaAFD.size(); j++) {
+                String letra = this.sigmaAFD.get(j);
+                this.tabla.get(letra).add(new ArrayList<String>());//añadir  un nuevo estado
+                for (int k = 0; k < estadoAFD.size(); k++) {
+                    ArrayList<String> proximos = this.encontrarAdyacencias(estadoAFD.get(k),
+                                                                           letra);
+                    for (int l = 0; l < proximos.size(); l++) {
+                        //se pueden repetir estados
+                       tabla.get(letra).get(i).add(proximos.get(l));
+                    }
+                }
+                for (int k = 0; k < tabla.get(letra).get(i).size(); k++) {
+                    ArrayList<String> proximos = this.encontrarAdyacencias(tabla.get(letra).get(i).get(k),
+                                                                           "_");
+                    for (int l = 0; l < proximos.size(); l++) {
+                       tabla.get(letra).get(i).add(proximos.get(l));
+                    }
+                }
+                if(this.tabla.get(letra).get(i).isEmpty())
+                {
+                    this.tabla.get(letra).get(i).add("sumidero");
+                }
+                //comprobar que el estado no esta presente para agregarlo
+                if(!this.encontrarCoincidencia(tabla.get(letra).get(i)))
+                {
+                    tabla.get("estados").add(tabla.get(letra).get(i));//añadir el estado si es que no esta previamente
+                }
             }
         }
+        //
+        //imprimir primeros estados
+        System.out.println("-------------");
+        System.out.println("empezo");
+        System.out.println("tamaño tabla" + tabla.get("estados").size());
+        System.out.println("Estados generados");
+        for (int i = 0; i < tabla.get("estados").size(); i++) {
+            System.out.printf("Q" + i + ": ");
+            ArrayList<String> estadosIniciales = tabla.get("estados").get(i);
+            for (int j = 0; j < estadosIniciales.size(); j++) {
+                System.out.printf(estadosIniciales.get(j) + ",");
+            }
+            System.out.printf("\n");
+        }
+        
         
     }
-    
-    private ArrayList<String> encontrarAdyacencias()
+    /*funcion para buscar los estados adyacentes a un estado al usar un dterminda simbolo del 
+    alfabeto como transicion*/
+    private ArrayList<String> encontrarAdyacencias(String estado,String caracter)
     {
         ArrayList<String> estadosAdyacentes = new ArrayList<>();
-        
+        for(int i =0;i<this.deltaAFD.size();i++)
+        {
+            Transicion objetivo = this.deltaAFD.get(i);
+            if(objetivo.getPrimera().equals(estado) && objetivo.getUnion().equals(caracter))
+            {
+                estadosAdyacentes.add(objetivo.getSegunda());
+            }
+        }
         return estadosAdyacentes;
+    }
+    //funcion para buscar si el estado ya fue agregado
+    private boolean encontrarCoincidencia(ArrayList<String> nuevo)
+    {
+        boolean encontrado = false;
+        ArrayList<ArrayList<String>> estadosA= this.tabla.get("estados");
+        if(nuevo.isEmpty())
+        {
+            for (int i = 0; i < estadosA.size(); i++) {
+                if(estadosA.get(i).isEmpty())
+                {
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i < estadosA.size() && !encontrado; i++) {
+            ArrayList<String> objetivo = estadosA.get(i);
+            int aux=0;
+            for (int j = 0; j < objetivo.size(); j++) {
+                if(nuevo.contains(objetivo.get(j)))
+                {
+                    aux++;
+                }
+            }
+            if(aux==(nuevo.size()))
+            {
+                
+                return true;
+            }
+        }
+        return encontrado;
     }
     //Ariel
     public ArrayList<String> getSigmaAFD() {

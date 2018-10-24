@@ -15,7 +15,7 @@ public class Maquinas {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String s = "a.b";
+        String s = "(a.b)";
         ER er = new ER(s);
         AFND afnd = new AFND();
         afnd.crearAFND(er.getRpn());

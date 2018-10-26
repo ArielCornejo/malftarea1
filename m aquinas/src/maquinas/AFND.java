@@ -15,6 +15,7 @@ public class AFND {
     private ArrayList<String> estados;
     private ArrayList<String> sigma;
     private ArrayList<Transicion> delta;
+    
     private int contador;
     //delta incoming
     public AFND() {

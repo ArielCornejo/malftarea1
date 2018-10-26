@@ -79,7 +79,7 @@ public class ER {
                     }
                     else{
                         boolean flag = true;
-                        while(flag ){
+                        while(flag && pila.size()>0 ){
                             if (this.precedencias.get(pila.peek()) < this.precedencias.get(erCadena[i]) /*|| this.precedencias.get(pila.peek()) > this.precedencias.get(erCadena[i])*/) {
                                 pila.push(erCadena[i]);
                                 flag = false;
@@ -91,13 +91,17 @@ public class ER {
                                 }
                             }
                         }
+                        if(pila.size()==0)
+                        {
+                            pila.push(erCadena[i]);
+                        }
                     }
                     
                     
                 }
             }
         }
-        while (pila.size() != 0) {
+        while (pila.size() >0) {
             this.rpn.add(pila.pop());
         }
 

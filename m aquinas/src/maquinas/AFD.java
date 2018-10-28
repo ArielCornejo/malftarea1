@@ -15,331 +15,35 @@ import java.util.Map.Entry;
  * @author felip
  */
 public class AFD {
+     private AFND afnd;
      private ArrayList<Transicion> deltaAFD;
      private ArrayList<String> sigmaAFD;
-     private ArrayList<ArrayList<String>> coneccionesDeCadaEstado;
      private String estadoDeInicio;
      private String estadoFinal;
      private String estadoInicioAFD;//estado de inicio del AFD
      private ArrayList<String> estadosFinales;//estado finales del AFD
      private ArrayList<String> estadosAFD;
-     private ArrayList<ArrayList<String>> estados;
-     private ArrayList<ArrayList<String>> estadosAuxiliares;
-     private ArrayList<Transicion> deltaModificado;
-     private ArrayList<String> coneccionesEstado;
-     private ArrayList<String> nodos;
-     private ArrayList<String> AuxiliaresEstados;
-     
-     
      HashMap<String,ArrayList<ArrayList<String>>> tabla;//una tabla para los estados, simula ser la tabla que se utiliza para los ejercicios
      private int contador;//similar al del AFND para dar numero a los estados 
      private ArrayList<Transicion> delta;
-     
-     
 
-    public AFD(ArrayList<Transicion> d, ArrayList<String> s, ArrayList<String> e) {
+    public AFD(AFND afnd) {
+        this.afnd = afnd;
         this.deltaAFD = new ArrayList <>();
         this.sigmaAFD = new ArrayList <>();
-        this.coneccionesDeCadaEstado = new ArrayList <>();;
         this.estadosAFD = new ArrayList <>();
-        this.estados = new ArrayList <>();
-        this.nodos = new ArrayList <>();
-        this.AuxiliaresEstados = new ArrayList <>();
-        this.estadosAuxiliares = new ArrayList <>();
         tabla = new HashMap<>();
-        this.deltaAFD = d;
-        this.sigmaAFD = s;
-        this.estadosAFD = e;
+        this.deltaAFD = afnd.getDelta();
+        this.sigmaAFD = afnd.getSigma();
+        this.estadosAFD = afnd.getEstados();
         this.estadoDeInicio = this.estadoSinEntrada();
         this.estadoFinal = this.estadoSinSalida();
-        System.out.println(estadoDeInicio);
-        System.out.println("ddd");
-        /*this.imprimirdelta();
-        nodosTodos();
-        crearArrayListEstados();
-        this.imprimirNodos();
-        this.coneccionesDeCadaEstado();
-        this.imprimirConeccionesDeCadaEstado();
-        
-        primeraIteracionConecciones();
-        imprimirEstados();*/
         this.estadosFinales = new ArrayList<>();
         this.delta = new ArrayList<>();
         this.contador=0;
-        this.afndAAfd();//metodo del ariel :3
-        //ordenarEstados();
-        //this.imprimirEstadosAuxiliares();
-        
-        
-    }
-    private void definirEstadosIniciales() {
-        int conecciones = coneccionesEstado(this.estadoDeInicio);
-        for (int i = 0; i < this.estados.size(); i++) {
-            for (int j = 0; j < conecciones; j++) {
-                for (int k = 0; k < this.deltaAFD.size(); k++) {
-                    //if (this.deltaAFD.get(i).getPrimera().) {
-                        
-                    //}
-                }
-            }
-        }
-        //dfdfff
- 
-        
-        
-        ///for (int i = 0; i < this.deltaAFD.size(); i++) {
-            //for (int j = 0; j < ; j++) {
-               // if (this.deltaAFD.get(i).getUnion().equals(this.estados.get(j).get(0))) {
-                    //this.
-               // }
-            //}
-        //}
-    }
-    private void imprimirdelta(){
-        for (int i = 0; i < this.deltaAFD.size(); i++) {
-            System.out.println(this.deltaAFD.get(i).getPrimera() + "," + this.deltaAFD.get(i).getUnion() + "," + this.deltaAFD.get(i).getSegunda());
-        }
+        this.afndAAfd();
     }
     
-    private void ordenarEstados(){
-        int i = 0;
-        int aux;
-        while(i < this.coneccionesDeCadaEstado.size()){
-            //System.out.println("puta la wea");
-            if (i==0) {
-                for (int j = 0; j < this.coneccionesDeCadaEstado.size(); j++) {
-                    System.out.println(this.coneccionesDeCadaEstado.get(j));
-                    if (this.coneccionesDeCadaEstado.get(j).get(0).equals(this.estadoDeInicio)) {
-                        ArrayList<String> a = new ArrayList <>();
-                        a = this.coneccionesDeCadaEstado.get(j);
-                        System.out.println(this.coneccionesDeCadaEstado.get(j));
-                        this.estadosAuxiliares.add(a);
-                        System.out.println("aaaaa");
-                        i++;
-                    }
-                }
-            }
-            else{
-                for (int k = 0; k < this.estadosAuxiliares.get(i-1).size(); k++) {
-                    System.out.println("1");
-                    if (k+1 != 1 && !((k+1)%2==0) ) {
-                        for (int j = 0; j < this.coneccionesDeCadaEstado.size(); j++) {
-                            System.out.println("2");
-                            if (this.estadosAuxiliares.get(i-1).get(k).equals(this.coneccionesDeCadaEstado.get(j).get(0))) {
-                                int cont = 0;
-                                for (int l = 0; l < this.estadosAuxiliares.size(); l++) {
-                                    System.out.println("3");
-                                    if (this.estadosAuxiliares.get(l).equals(this.coneccionesDeCadaEstado.get(j))) {
-                                        System.out.println("aumento cont");
-                                        cont++;
-                                    }
-                                }
-                                if (cont == 0) {
-                                    this.estadosAuxiliares.add(this.coneccionesDeCadaEstado.get(j));
-                                    i++;
-                                }
-                                
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } 
-    
-    private void imprimirEstadosAuxiliares(){
-        for (int i = 0; i < this.estadosAuxiliares.size(); i++) {
-            System.out.println(estadosAuxiliares.get(i));
-        }
-    }
-    
-    private void llenarestadosInicialesArryListEstados() {
-        for (int i = 0; i < this.estados.size(); i++) {
-            int  contador = 0 ;
-            String s = null;
-            for (int j = 0; j < this.deltaAFD.size(); j++) {
-                boolean flag1 = false;
-                if (this.deltaAFD.get(j).getUnion().equals(this.estados.get(i).get(0)) && !this.deltaAFD.get(j).getPrimera().equals(s) || this.deltaAFD.get(j).getUnion().equals(this.estados.get(i).get(0)) && contador == 0) {
-                    this.estados.get(i).add(this.deltaAFD.get(j).getSegunda());
-                    s = this.deltaAFD.get(j).getSegunda();
-                    String aux;
-                    int contadorinterior=0;
-                    for (int k = 0; k < this.deltaAFD.size(); k++) {
-                        if (contadorinterior == 0) {
-                            if (this.deltaAFD.get(k).getUnion().equals("_") && this.deltaAFD.get(k).getPrimera().equals(s)) {
-                                aux = this.deltaAFD.get(k).getSegunda();
-                            }
-                        }
-                        
-                    }
-                    
-                    
-                    /*if (contador == 0) {
-                        this.estados.get(i).add(this.deltaAFD.get(j).getSegunda());
-                        contador ++;
-                    }
-                    else {
-                        if (this.estados.get(i).get(contador).equals(this.deltaAFD.get(j).getPrimera()) && ) {
-                            
-                        }
-                    }*/
-                }
-            }
-        }
-    }
-    
-    private void crearArrayListEstados() {
-        for (int i = -1; i < this.deltaAFD.size(); i++) {
-            if (i==-1) {
-                ArrayList<String> ep = new ArrayList <>();
-                ep.add("_");
-                this.estados.add(ep);
-            }
-            else {
-                int a = (int) this.deltaAFD.get(i).getUnion().charAt(0);
-                if (a >= 65 && a<= 90 || a >= 97 && a<= 122 ) {
-                    int contador =0;
-                    for (int j = 0; j < estados.size(); j++) {
-                        if (estados.get(j).get(0).equals(a)) {
-                            contador ++;
-                        }
-                    }
-                    if (contador == 0) {
-                        ArrayList<String> nuevo = new ArrayList <>();
-                        nuevo.add(this.deltaAFD.get(i).getUnion());
-                        this.estados.add(nuevo);
-                    }
-
-                }
-            }
-        }
-    }
-    
-    private void imprimirEstados() {
-        for (int i = 0; i < this.estados.size(); i++) {
-            System.out.println(estados.get(i));
-        }
-    }
-    
-    private int coneccionesEstado(String s){
-        int conecciones = 0;
-        for (int i = 0; i < this.deltaAFD.size(); i++) {
-            if (this.deltaAFD.get(i).getPrimera().equals(s)) {
-                conecciones++;
-            }
-        }
-        return conecciones;
-        
-    }
-    
-    private ArrayList<String> coneccionesEstadoArrayList( int conec, String s) {
-        ArrayList<String> coneccionesEstadoAux = new ArrayList<>();
-        for (int i = 0; i < this.deltaAFD.size(); i++) {
-            if (this.deltaAFD.get(i).getPrimera().equals(s)) {
-                coneccionesEstadoAux.add(this.deltaAFD.get(i).getSegunda());
-            }
-        }
-        return coneccionesEstadoAux;
-    }
-    
-    private void coneccionesDeCadaEstado() {
-        for (int i = 0; i < this.nodos.size(); i++) {
-            ArrayList<String> aux = new ArrayList<>();
-            aux.add(this.nodos.get(i));
-            for (int j = 0; j < this.deltaAFD.size(); j++) {
-                if (this.nodos.get(i).equals(this.deltaAFD.get(j).getPrimera())) {
-                    //System.out.println(this.deltaAFD.get(i).getSegunda()+", "+ this.deltaAFD.get(j).getSegunda());
-                    aux.add(this.deltaAFD.get(j).getUnion());
-                    aux.add(this.deltaAFD.get(j).getSegunda());
-                    
-                }
-            }
-            this.coneccionesDeCadaEstado.add(aux);
-        }
-    }
-    
-    private void nodosTodos(){
-        String primero;
-        String segundo;
-        for (int i = 0; i < this.deltaAFD.size(); i++) {
-            if (i==0) {
-                primero = this.deltaAFD.get(i).getPrimera();
-                segundo = this.deltaAFD.get(i).getSegunda();
-                this.nodos.add(primero);
-                this.nodos.add(segundo);
-            }
-            else {
-                primero = this.deltaAFD.get(i).getPrimera();
-                segundo = this.deltaAFD.get(i).getSegunda();
-                int contadorPrimero = 0;
-                int contadorSegundo = 0;
-                for (int j = 0; j <this.nodos.size() ; j++) {
-                    if (this.nodos.get(j).equals(primero)) {
-                        contadorPrimero ++;
-                    }
-                }
-                for (int j = 0; j < this.nodos.size(); j++) {
-                    if (this.nodos.get(j).equals(segundo)) {
-                        contadorSegundo ++;
-                    }
-                }
-                if (contadorPrimero==0) {
-                    this.nodos.add(primero);
-                }
-                if (contadorSegundo==0) {
-                    this.nodos.add(segundo);
-                }
-            }           
-        }
-    }
-    
-    private void imprimirNodos(){
-        for (int i = 0; i < this.nodos.size(); i++) {
-            System.out.println(nodos.get(i));
-        }
-    }
-    
-    private void imprimirConeccionesDeCadaEstado(){
-        for (int i = 0; i < coneccionesDeCadaEstado.size(); i++) {
-            System.out.println(coneccionesDeCadaEstado.get(i));
-        }
-        System.out.println("aaaaaaaa mi pichulaaaaaaa");
-        
-        
-    }
-    
-    private void primeraIteracionConecciones(){
-        for (int x = 0; x < this.estados.size(); x++) {
-            //System.out.println("entro al 1 for");
-            for (int i = 0; i < coneccionesDeCadaEstado.size(); i++) {
-                //System.out.println("entro al 2 for");
-                for (int j = 0; j < coneccionesDeCadaEstado.get(i).size(); j++) {
-                    //System.out.println("entro al 3 for");
-                    if (coneccionesDeCadaEstado.get(i).size() > 1) {
-                        if ((j+1)%2==0) {
-                            if (this.estados.get(x).get(0).equals(this.coneccionesDeCadaEstado.get(i).get(j))) {
-                                this.estados.get(x).add(this.coneccionesDeCadaEstado.get(i).get(j+1));
-                                for (int k = 0; k < coneccionesDeCadaEstado.size(); k++) {
-                                    //System.out.println("entro al 4 for");
-                                    if (coneccionesDeCadaEstado.get(k).get(0).equals(this.coneccionesDeCadaEstado.get(i).get(j+1))) {
-                                        for (int l = 0; l < coneccionesDeCadaEstado.get(k).size(); l++) {
-                                            //System.out.println("entro al 5 for");
-                                            if ((l+1)%2==0 && this.coneccionesDeCadaEstado.get(k).get(l+1).equals("_")) {
-                                                this.estados.get(x).add(this.coneccionesDeCadaEstado.get(k).get(l+1));
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-
-  //No borrar estos metodos  
     private String estadoSinEntrada() {
         String nuevo = null;
         for(int i=0;i<this.estadosAFD.size();i++){
@@ -373,7 +77,6 @@ public class AFD {
         }
         return nuevo;
      }
-    //no borrar estos metodos
    //Ariel
     /*Param armar el la tabla primero se agregan los estados que por epsilon salen desde el inicio,
     luego se agregan cada uno de los que de este salen por los simbolos del alfabeto y al final de cada 
@@ -478,15 +181,11 @@ public class AFD {
                 this.estadosFinales.add(estado.get(estado.size()-1));
             }
         }
-        
         System.out.println("Estado Inicio " + this.estadoInicioAFD);
         System.out.println("Estados Finales");
         for (int i = 0; i < this.estadosFinales.size(); i++) {
             System.out.println("Estado " + this.estadosFinales.get(i));
         }
-        
-        
-        
     }
     /*funcion para buscar los estados adyacentes a un estado al usar un dterminda simbolo del 
     alfabeto como transicion*/
@@ -557,9 +256,7 @@ public class AFD {
         }
         return null;
     }
-    
-   
-    //Ariel
+
     public ArrayList<String> getSigmaAFD() {
         return sigmaAFD;
     }
@@ -575,4 +272,37 @@ public class AFD {
     public void setDeltaAFD(ArrayList<Transicion> deltaAFD) {
         this.deltaAFD = deltaAFD;
     }
+
+    public ArrayList<Transicion> getDelta() {
+        return delta;
+    }
+
+    public void setDelta(ArrayList<Transicion> delta) {
+        this.delta = delta;
+    }
+
+    public String getEstadoInicioAFD() {
+        return estadoInicioAFD;
+    }
+
+    public void setEstadoInicioAFD(String estadoInicioAFD) {
+        this.estadoInicioAFD = estadoInicioAFD;
+    }
+
+    public ArrayList<String> getEstadosFinales() {
+        return estadosFinales;
+    }
+
+    public void setEstadosFinales(ArrayList<String> estadosFinales) {
+        this.estadosFinales = estadosFinales;
+    }
+
+    public HashMap<String, ArrayList<ArrayList<String>>> getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(HashMap<String, ArrayList<ArrayList<String>>> tabla) {
+        this.tabla = tabla;
+    }
+
 }

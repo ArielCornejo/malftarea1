@@ -344,7 +344,5 @@ public class AFND {
     public void setContador(int contador) {
         this.contador = contador;
     }
-    
-    
-    
+
 }

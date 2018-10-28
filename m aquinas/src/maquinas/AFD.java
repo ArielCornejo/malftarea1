@@ -81,7 +81,7 @@ public class AFD {
     /*Param armar el la tabla primero se agregan los estados que por epsilon salen desde el inicio,
     luego se agregan cada uno de los que de este salen por los simbolos del alfabeto y al final de cada 
     arreglo de estado se agrega un identificiador de la manera "Q(numero)" que representa que estado es
-    en el AFD. Una vez que se logra eso se agrgan las transiciones.
+    en el AFD. Una vez que se logra eso se agregan las transiciones.
     */
     public void afndAAfd()
     {
@@ -100,7 +100,9 @@ public class AFD {
             ArrayList<String> proximos =this.encontrarAdyacencias(tabla.get("estados").get(0).get(i), "_");
             for (int j = 0; j < proximos.size(); j++) 
             {
+                if(!tabla.get("estados").get(0).contains(j)){
                 tabla.get("estados").get(0).add(proximos.get(j));
+                }
             }
             
         }
@@ -118,14 +120,18 @@ public class AFD {
                                                                            letra);
                     for (int l = 0; l < proximos.size(); l++) {
                         //se pueden repetir estados
-                       tabla.get(letra).get(i).add(proximos.get(l));
+                        if(!tabla.get(letra).get(i).contains(proximos.get(l))){
+                            tabla.get(letra).get(i).add(proximos.get(l));
+                        }
                     }
                 }
                 for (int k = 0; k < tabla.get(letra).get(i).size(); k++) {
                     ArrayList<String> proximos = this.encontrarAdyacencias(tabla.get(letra).get(i).get(k),
                                                                            "_");
                     for (int l = 0; l < proximos.size(); l++) {
-                       tabla.get(letra).get(i).add(proximos.get(l));
+                        if(!tabla.get(letra).get(i).contains(proximos.get(l))){
+                            tabla.get(letra).get(i).add(proximos.get(l));
+                        }
                     }
                 }
                 if(this.tabla.get(letra).get(i).isEmpty())

@@ -104,8 +104,10 @@ public class AFND {
                        }
                        else
                        {
-                           segundoSinEntrada = objetivo.getPrimera();
-                           flag1=true;
+                           if(!primerSinEntrada.equals(objetivo.getPrimera())){
+                                segundoSinEntrada = objetivo.getPrimera();
+                                flag1=true;
+                           }
                        }
                    }
                }
@@ -126,8 +128,10 @@ public class AFND {
                        }
                        else
                        {
-                           segundoSinSalida = objetivo.getSegunda();
-                           flag2=true;
+                           if(!primerSinSalida.equals(objetivo.getSegunda())){
+                                segundoSinSalida = objetivo.getSegunda();
+                                flag2=true;
+                           }
                        }
                    }
                }

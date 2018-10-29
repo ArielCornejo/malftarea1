@@ -49,7 +49,8 @@ public class ER {
         
         for (int i = 0; i < erCadena.length; i++) {
             int a = (int) erCadena[i].charAt(0);
-            if (a >= 65 && a<= 90 || a >= 97 && a<= 122 ) {
+            
+            if (a >= 65 && a<= 90 || a >= 97 && a<= 122 || a>=48 && a<=57 || a==95 || a==126) {
                 this.rpn.add(erCadena[i]);
             }
             /*if(erCadena[i].equals("("))

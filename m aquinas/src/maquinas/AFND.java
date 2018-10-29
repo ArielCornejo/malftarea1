@@ -30,7 +30,7 @@ public class AFND {
         this.contador=0;
         for (int i = 0; i < rpn.size(); i++) {
             int a = (int) rpn.get(i).charAt(0);
-            if (a >= 65 && a<= 90 || a >= 97 && a<= 122 ) {
+            if (a >= 65 && a<= 90 || a >= 97 && a<= 122 || a>=48 && a<=57 || a==95) {
                 if(!this.sigma.contains(rpn.get(i))){
                     this.sigma.add(rpn.get(i));
                 }
@@ -224,6 +224,12 @@ public class AFND {
                     this.delta.add(new Transicion(comienzo,"_",finalo));
                 }
                 
+            }
+            if(rpn.get(i).equals("~"))
+            {
+                this.estados.add("q"+this.contador);
+                this.contador++;
+                this.estados.add("q"+this.contador);
             }
         }
         

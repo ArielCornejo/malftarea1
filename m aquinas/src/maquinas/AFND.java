@@ -50,7 +50,7 @@ public class AFND {
                     if(this.comprobarSinEntrada(objetivo.getPrimera()))
                     {
                        primerSinEntrada = objetivo.getPrimera();
-                        System.out.println("sin Entrada:" + primerSinEntrada);
+                        //System.out.println("sin Entrada:" + primerSinEntrada);
                        flag1=true;
                     }
                 }
@@ -73,7 +73,7 @@ public class AFND {
                             if(!objetivo.getSegunda().equals(aux))
                             {
                                 segundoSinSalida= objetivo.getSegunda();
-                                System.out.println("2° sin salida: " + segundoSinSalida);
+                                //System.out.println("2° sin salida: " + segundoSinSalida);
                                 flag2=true;
                             }
                             
@@ -160,7 +160,7 @@ public class AFND {
                         if(this.comprobarSinEntrada(objetivo.getPrimera()))
                         {
                            primerSinEntrada = objetivo.getPrimera();
-                            System.out.println("sin Entrada:" + primerSinEntrada);
+                            //System.out.println("sin Entrada:" + primerSinEntrada);
                            flag1=true;
                         }
                     }
@@ -172,7 +172,7 @@ public class AFND {
                         if(this.comprobarSinSalida(objetivo.getSegunda()))
                         {
                            primerSinSalida = objetivo.getSegunda();
-                           System.out.println("sin Salida:" + primerSinSalida);
+                           //System.out.println("sin Salida:" + primerSinSalida);
                            flag2=true;
                         }
                     }
@@ -236,8 +236,9 @@ public class AFND {
     }
     
     public void imprimirAFND() {
+        System.out.println("Delta:");
         for (int i = 0; i < this.delta.size(); i++) {
-            System.out.println(this.delta.get(i).getPrimera() + "," + this.delta.get(i).getUnion() + "," + this.delta.get(i).getSegunda());
+            System.out.println("("+this.delta.get(i).getPrimera() + "," + this.delta.get(i).getUnion() + "," + this.delta.get(i).getSegunda()+")");
         }
     
     }

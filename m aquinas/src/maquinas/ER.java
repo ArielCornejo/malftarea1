@@ -25,7 +25,7 @@ public class ER {
         this.separarString();
         this.llenarPrecedencias();
         this.aplicarShuntingYard();
-        this.imprimirRpn();
+        //this.imprimirRpn();
     }
     
     

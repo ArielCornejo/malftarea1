@@ -18,6 +18,7 @@ public class AFD {
      private AFND afnd;
      private ArrayList<Transicion> deltaAFD;
      private ArrayList<String> sigmaAFD;
+     private ArrayList<String> K;
      private String estadoDeInicio;
      private String estadoFinal;
      private String estadoInicioAFD;//estado de inicio del AFD
@@ -32,6 +33,7 @@ public class AFD {
         this.deltaAFD = new ArrayList <>();
         this.sigmaAFD = new ArrayList <>();
         this.estadosAFD = new ArrayList <>();
+        this.K = new ArrayList <>();
         tabla = new HashMap<>();
         this.deltaAFD = afnd.getDelta();
         this.sigmaAFD = afnd.getSigma();
@@ -77,7 +79,7 @@ public class AFD {
         }
         return nuevo;
      }
-   //Ariel
+    
     /*Param armar el la tabla primero se agregan los estados que por epsilon salen desde el inicio,
     luego se agregan cada uno de los que de este salen por los simbolos del alfabeto y al final de cada 
     arreglo de estado se agrega un identificiador de la manera "Q(numero)" que representa que estado es
@@ -91,7 +93,6 @@ public class AFD {
         {
             tabla.put(this.sigmaAFD.get(i),new ArrayList<ArrayList<String>>());
         }
-        System.out.println("estado de inicio" + this.estadoDeInicio);
         //rellenar estado inicial
         tabla.get("estados").add(new ArrayList<String>());
         tabla.get("estados").get(0).add(estadoDeInicio);
@@ -107,6 +108,7 @@ public class AFD {
             
         }
         tabla.get("estados").get(0).add("Q"+ this.contador);
+        this.K.add("Q"+ this.contador);
         this.contador++;
         //Automatizacion
         for (int i = 0; i < tabla.get("estados").size(); i++)
@@ -142,6 +144,7 @@ public class AFD {
                 if(this.encontrarEstado(this.tabla.get(letra).get(i))==null)
                 {
                     tabla.get(letra).get(i).add("Q" + this.contador);
+                    this.K.add("Q"+ this.contador);
                     this.contador++;
                     tabla.get("estados").add(tabla.get(letra).get(i));//añadir el estado si es que no esta previamente
                 }
@@ -154,25 +157,6 @@ public class AFD {
                 this.delta.add(new Transicion(estadoAFD.get(estadoAFD.size()-1),letra,tabla.get(letra).get(i).get(posicion)));
                 
             }
-        }
-        //
-        //imprimir primeros estados
-        System.out.println("-------------");
-        System.out.println("empezo");
-        System.out.println("tamaño tabla" + tabla.get("estados").size());
-        System.out.println("Estados generados");
-        for (int i = 0; i < tabla.get("estados").size(); i++) {
-            System.out.printf("Q" + i + ": ");
-            ArrayList<String> estadosIniciales = tabla.get("estados").get(i);
-            for (int j = 0; j < estadosIniciales.size(); j++) {
-                System.out.printf(estadosIniciales.get(j) + ",");
-            }
-            System.out.printf("\n");
-        }
-        
-        //formar transiciones
-        for (int i = 0; i < this.delta.size(); i++) {
-            System.out.println(this.delta.get(i).getPrimera() +","+this.delta.get(i).getUnion()+","+this.delta.get(i).getSegunda());
         }
         //Agregar estados de inicio y de fin del AFD
         ArrayList<ArrayList<String>> estados = this.tabla.get("estados");
@@ -187,11 +171,13 @@ public class AFD {
                 this.estadosFinales.add(estado.get(estado.size()-1));
             }
         }
-        System.out.println("Estado Inicio " + this.estadoInicioAFD);
-        System.out.println("Estados Finales");
-        for (int i = 0; i < this.estadosFinales.size(); i++) {
-            System.out.println("Estado " + this.estadosFinales.get(i));
+        
+    }
+    public void imprimirTransiciones(){
+        for (int i = 0; i < this.delta.size(); i++) {
+            System.out.println("("+this.delta.get(i).getPrimera() +","+this.delta.get(i).getUnion()+","+this.delta.get(i).getSegunda()+")");
         }
+    
     }
     /*funcion para buscar los estados adyacentes a un estado al usar un dterminda simbolo del 
     alfabeto como transicion*/
@@ -311,4 +297,54 @@ public class AFD {
         this.tabla = tabla;
     }
 
+    public AFND getAfnd() {
+        return afnd;
+    }
+
+    public void setAfnd(AFND afnd) {
+        this.afnd = afnd;
+    }
+
+    public String getEstadoDeInicio() {
+        return estadoDeInicio;
+    }
+
+    public void setEstadoDeInicio(String estadoDeInicio) {
+        this.estadoDeInicio = estadoDeInicio;
+    }
+
+    public String getEstadoFinal() {
+        return estadoFinal;
+    }
+
+    public void setEstadoFinal(String estadoFinal) {
+        this.estadoFinal = estadoFinal;
+    }
+
+    public ArrayList<String> getEstadosAFD() {
+        return estadosAFD;
+    }
+
+    public void setEstadosAFD(ArrayList<String> estadosAFD) {
+        this.estadosAFD = estadosAFD;
+    }
+
+    public int getContador() {
+        return contador;
+    }
+
+    public void setContador(int contador) {
+        this.contador = contador;
+    }
+
+    public ArrayList<String> getK() {
+        return K;
+    }
+
+    public void setK(ArrayList<String> K) {
+        this.K = K;
+    }
+    
+    
+    
 }
